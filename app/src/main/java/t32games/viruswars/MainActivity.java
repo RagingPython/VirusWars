@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         buttonTurn2.setOnClickListener(this);
         buttonTurn3.setOnClickListener(this);
         buttonEndTurn.setOnClickListener(this);
+        gameField.setOnTouchListener(gameField);
     }
 
 
