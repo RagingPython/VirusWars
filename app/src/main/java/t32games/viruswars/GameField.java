@@ -10,22 +10,15 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
-public class GameField extends View implements View.OnTouchListener{
-    public static final int PLAYER_1 =1;
-    public static final int PLAYER_2 =2;
-    public static final int CELL_AVAILABLE = 1;
-    public static final int CELL_NOT_AVAILABLE = 0;
-    public static final int CELL_SELECTED =2;
-
-    private static final int X_FIELD_SIZE = 10;
-    private static final int Y_FIELD_SIZE = 10;
+public class GameField extends View implements View.OnTouchListener, View.OnClickListener{
     private static final int BACKGROUND_COLOR = Color.WHITE;
     private static final int GRID_LINE_COLOR = Color.BLACK;
-    private static final float GRID_LINE_WIDTH =4;
-    private static final int SPACING = 20;
+    private static final float GRID_LINE_WIDTH =0.05f;
+    private static final float GAME_FIELD_RATIO = 0.95f;
 
     private CellArtist cellArtist;
     private GameLogic gL;
+    private TurnControl tC;
     private Path gridPath;
     private Paint gridPaint;
     private int lastHeight = -1;
@@ -40,12 +33,12 @@ public class GameField extends View implements View.OnTouchListener{
 
     public GameField(Context context, AttributeSet attrs) {
         super(context, attrs);
-        cellArtist = new CellArtist(this);
+        gL = new GameLogic();
+        tC = new TurnControl(gL);
+        cellArtist = new CellArtist();
+        this.setBackgroundColor(BACKGROUND_COLOR);
     }
 
-    public void setGameLogic(GameLogic gameLogic){
-        gL=gameLogic;
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -54,16 +47,22 @@ public class GameField extends View implements View.OnTouchListener{
 
         if ((lastHeight!=canvas.getHeight())|(lastWidth!=canvas.getWidth())) {
             recalculateGrid(canvas.getWidth(), canvas.getHeight());
+            lastHeight=canvas.getHeight();
+            lastWidth=canvas.getWidth();
             cellArtist.initialize(cS);
         }
 
-        for (int x=0; x<X_FIELD_SIZE; x++) {
-            for (int y=0; y<Y_FIELD_SIZE; y++){
-                cellArtist.drawCell(canvas,leftSpacing+x*cS,topSpacing+y*cS,gL.getPlayer(x,y),gL.getKilled(x,y),0);
+        if (gL.getPlayerTurn()==0) {
+            canvas.drawColor(BACKGROUND_COLOR);
+        } else {
+
+            for (int x = 0; x < gL.X_FIELD_SIZE; x++) {
+                for (int y = 0; y < gL.Y_FIELD_SIZE; y++) {
+                    //TODO: change selected
+                    cellArtist.drawCell(canvas, leftSpacing + x * cS, topSpacing + y * cS, gL.getPlayer(x, y), gL.getKilled(x, y), 0);
+                }
             }
         }
-
-
 
         gridPath.offset(leftSpacing,topSpacing);
         canvas.drawPath(gridPath, gridPaint);
@@ -73,20 +72,20 @@ public class GameField extends View implements View.OnTouchListener{
         gridPath = new Path();
         gridPaint = new Paint();
 
-        cS = (float) Math.floor((Math.min(x,y)-SPACING)/((double) Math.max(X_FIELD_SIZE,Y_FIELD_SIZE)));
-        leftSpacing= (float)((x-X_FIELD_SIZE* cS)/2.0);
-        topSpacing= (float)((y-Y_FIELD_SIZE* cS)/2.0);
+        cS = (float) Math.floor(Math.min(x,y)*GAME_FIELD_RATIO/((double) Math.max(gL.X_FIELD_SIZE,gL.Y_FIELD_SIZE)));
+        leftSpacing= ((x-gL.X_FIELD_SIZE*cS)/2f);
+        topSpacing= ((y-gL.Y_FIELD_SIZE*cS)/2f);
 
         gridPath.reset();
         gridPath.moveTo(0,0);
 
-        for(int i = 0; i<=X_FIELD_SIZE;i++) {
-            gridPath.moveTo(cS *i,-GRID_LINE_WIDTH/2);
-            gridPath.lineTo(cS *i,Y_FIELD_SIZE* cS +GRID_LINE_WIDTH/2);
+        for(int i = 0; i<=gL.X_FIELD_SIZE;i++) {
+            gridPath.moveTo(cS*i,-GRID_LINE_WIDTH*cS/2f);
+            gridPath.lineTo(cS*i,gL.Y_FIELD_SIZE*cS +cS*GRID_LINE_WIDTH/2f);
         }
-        for(int i = 0; i<=Y_FIELD_SIZE;i++) {
-            gridPath.moveTo(-GRID_LINE_WIDTH/2, cS *i);
-            gridPath.lineTo(X_FIELD_SIZE* cS +GRID_LINE_WIDTH/2, cS *i);
+        for(int i = 0; i<=gL.Y_FIELD_SIZE;i++) {
+            gridPath.moveTo(-GRID_LINE_WIDTH*cS/2f, cS *i);
+            gridPath.lineTo(gL.X_FIELD_SIZE*cS +GRID_LINE_WIDTH*cS/2f, cS*i);
         }
 
         gridPaint.setColor(GRID_LINE_COLOR);
@@ -94,18 +93,20 @@ public class GameField extends View implements View.OnTouchListener{
         gridPaint.setStrokeWidth(GRID_LINE_WIDTH);
     }
 
-    private void cellPressed(int x, int y) {
-
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (gL.getPlayerTurn()!=0) {
+            if ((motionEvent.getAction() == MotionEvent.ACTION_DOWN) | (motionEvent.getAction() == MotionEvent.ACTION_MOVE)) {
+                selectedX = motionEvent.getX();
+                selectedY = motionEvent.getY();
+            }
+            this.invalidate();
+        }
+        return true;
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-
-        if ((motionEvent.getAction()==MotionEvent.ACTION_DOWN)|(motionEvent.getAction()==MotionEvent.ACTION_MOVE)){
-            selectedX=motionEvent.getX();
-            selectedY=motionEvent.getY();
-        }
-        this.invalidate();
-        return true;
+    public void onClick(View view) {
+        tC.onClick(view);
     }
 }

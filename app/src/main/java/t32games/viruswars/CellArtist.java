@@ -20,7 +20,7 @@ public class CellArtist {
     Paint player1ControlPaint = new Paint();
     Paint player2ControlPaint = new Paint();
 
-    public CellArtist(GameField gameField){
+    public CellArtist(){
         player1DeadPaint.setStyle(Paint.Style.STROKE);
         player2DeadPaint.setStyle(Paint.Style.STROKE);
         player1AlivePaint.setColor(Color.BLUE);
@@ -48,13 +48,13 @@ public class CellArtist {
         Paint p = new Paint();
         Path pth;
         p.setColor(Color.WHITE);
-        if (selected == GameField.CELL_SELECTED) {
+        if (selected == GameLogic.CELL_SELECTED) {
             p=selectedPaint;
-        } else if (selected == GameField.CELL_AVAILABLE) {
+        } else if (selected == GameLogic.CELL_AVAILABLE) {
             p=availablePaint;
-        } else if (((player==GameField.PLAYER_1)&(!killed))|((player==GameField.PLAYER_2)&(killed))) {
+        } else if (((player==GameLogic.PLAYER_1)&(!killed))|((player==GameLogic.PLAYER_2)&(killed))) {
             p=player1ControlPaint;
-        } else if (((player==GameField.PLAYER_2)&(!killed))|((player==GameField.PLAYER_1)&(killed))) {
+        } else if (((player==GameLogic.PLAYER_2)&(!killed))|((player==GameLogic.PLAYER_1)&(killed))) {
             p=player2ControlPaint;
         }
         if (p!=null) {
@@ -69,16 +69,16 @@ public class CellArtist {
 
         p=null;
 
-        if ((player==GameField.PLAYER_1)&(!killed)) {
+        if ((player==GameLogic.PLAYER_1)&(!killed)) {
             pth=playerAlivePath;
             p=player1AlivePaint;
-        } else if ((player==GameField.PLAYER_1)&(killed)) {
+        } else if ((player==GameLogic.PLAYER_1)&(killed)) {
             pth=playerDeadPath;
             p=player1DeadPaint;
-        } else if ((player==GameField.PLAYER_2)&(!killed)) {
+        } else if ((player==GameLogic.PLAYER_2)&(!killed)) {
             pth=playerAlivePath;
             p=player2AlivePaint;
-        } else if ((player==GameField.PLAYER_2)&(killed)) {
+        } else if ((player==GameLogic.PLAYER_2)&(killed)) {
             pth=playerDeadPath;
             p=player2DeadPaint;
         }
