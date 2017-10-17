@@ -10,7 +10,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     GameField gameField;
     Button buttonTurn1, buttonTurn2, buttonTurn3, buttonEndTurn;
     TextView textViewPlayerName;
-    TmpGameClass tmpGameClass;
 
 
     @Override
@@ -24,7 +23,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         buttonTurn3 = (Button) findViewById(R.id._buttonTurn3);
         buttonEndTurn = (Button) findViewById(R.id._buttonEndTurn);
         textViewPlayerName = (TextView) findViewById(R.id._textViewPlayerName);
-        tmpGameClass = new TmpGameClass();
 
         buttonTurn1.setOnClickListener(this);
         buttonTurn2.setOnClickListener(this);
