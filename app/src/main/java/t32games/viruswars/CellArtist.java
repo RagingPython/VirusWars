@@ -48,9 +48,9 @@ public class CellArtist {
         Paint p = new Paint();
         Path pth;
         p.setColor(Color.WHITE);
-        if (selected == GameLogic.CELL_SELECTED) {
+        if (selected == FieldStateSnapshot.CELL_SELECTED) {
             p=selectedPaint;
-        } else if (selected == GameLogic.CELL_AVAILABLE) {
+        } else if (selected == FieldStateSnapshot.CELL_AVAILABLE) {
             p=availablePaint;
         } else if (((player==GameLogic.PLAYER_1)&(!killed))|((player==GameLogic.PLAYER_2)&(killed))) {
             p=player1ControlPaint;

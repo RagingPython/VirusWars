@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity{
     GameField gameField;
+    GameLogic gameLogic;
+    TurnControl turnControl;
     Button buttonNewGame, buttonEndTurn;
     TextView textViewPlayerName;
 
@@ -21,11 +23,14 @@ public class MainActivity extends Activity{
         buttonNewGame = (Button) findViewById(R.id._buttonNewGame);
         buttonEndTurn = (Button) findViewById(R.id._buttonEndTurn);
         textViewPlayerName = (TextView) findViewById(R.id._textViewPlayerName);
+        gameLogic = new GameLogic();
+        turnControl = new TurnControl();
+        turnControl.setGameLogic(gameLogic);
+        turnControl.setGameField(gameField);
+        gameField.setTurnControl(turnControl);
 
-        //buttonTurn1.setOnClickListener(this);
-        //buttonTurn2.setOnClickListener(this);
-        buttonNewGame.setOnClickListener(gameField);
-        buttonEndTurn.setOnClickListener(gameField);
+        buttonNewGame.setOnClickListener(turnControl);
+        buttonEndTurn.setOnClickListener(turnControl);
         gameField.setOnTouchListener(gameField);
     }
 
