@@ -13,7 +13,7 @@ import android.view.View;
 public class GameField extends View implements View.OnTouchListener{
     private static final int BACKGROUND_COLOR = Color.WHITE;
     private static final int GRID_LINE_COLOR = Color.BLACK;
-    private static final float GRID_LINE_WIDTH =0.05f;
+    private static final float GRID_LINE_WIDTH =0.07f;
     private static final float GAME_FIELD_RATIO = 0.95f;
 
     private CellArtist cellArtist;
@@ -70,7 +70,7 @@ public class GameField extends View implements View.OnTouchListener{
             }
         }
 
-        gridPath.offset(leftSpacing,topSpacing);
+
         canvas.drawPath(gridPath, gridPaint);
     }
 
@@ -96,7 +96,8 @@ public class GameField extends View implements View.OnTouchListener{
 
         gridPaint.setColor(GRID_LINE_COLOR);
         gridPaint.setStyle(Paint.Style.STROKE);
-        gridPaint.setStrokeWidth(GRID_LINE_WIDTH);
+        gridPaint.setStrokeWidth(GRID_LINE_WIDTH*cS);
+        gridPath.offset(leftSpacing,topSpacing);
     }
 
     @Override
@@ -118,8 +119,8 @@ public class GameField extends View implements View.OnTouchListener{
         float cx = motionEvent.getX() - leftSpacing;
         float cy = motionEvent.getY() - topSpacing;
         if((cx<cS*GameLogic.X_FIELD_SIZE)&(cy<cS*GameLogic.Y_FIELD_SIZE)) {
-            clickX=(int) Math.floor(cx/GameLogic.X_FIELD_SIZE);
-            clickY=(int) Math.floor(cy/GameLogic.Y_FIELD_SIZE);
+            clickX=(int) Math.floor(cx/cS);
+            clickY=(int) Math.floor(cy/cS);
             return true;
         }
         return false;

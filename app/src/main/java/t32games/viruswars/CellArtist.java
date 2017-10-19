@@ -22,13 +22,15 @@ public class CellArtist {
 
     public CellArtist(){
         player1DeadPaint.setStyle(Paint.Style.STROKE);
+        player1DeadPaint.setStrokeWidth(3);
         player2DeadPaint.setStyle(Paint.Style.STROKE);
+        player2DeadPaint.setStrokeWidth(3);
         player1AlivePaint.setColor(Color.BLUE);
         player1DeadPaint.setColor(Color.BLUE);
         player2AlivePaint.setColor(Color.RED);
         player2DeadPaint.setColor(Color.RED);
         selectedPaint.setColor(Color.YELLOW);
-        availablePaint.setARGB(255,255,255,150);
+        availablePaint.setARGB(170,170,255,150);
         player2ControlPaint.setARGB(255,255,170,170);
         player1ControlPaint.setARGB(255,200,200,255);
     }

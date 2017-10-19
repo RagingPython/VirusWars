@@ -1,5 +1,7 @@
 package t32games.viruswars;
 
+import android.util.Log;
+
 public class GameLogic {
     public static final int IDLE =0;
     public static final int PLAYER_1 =1;
@@ -38,7 +40,7 @@ public class GameLogic {
 
     public boolean makeTurn(int semiturnPointer, int[] semiturnX, int[] semiturnY) {
         boolean flag =true;
-        if (semiturnPointer==0) {
+        if (semiturnPointer<3) {
             flag=false;
         }
         for(int i=0;i<semiturnPointer;i++) {
@@ -51,7 +53,7 @@ public class GameLogic {
             int availabilitySum = 0;
             for (int x=0;x<X_FIELD_SIZE;x++) {
                 for (int y = 0; y < Y_FIELD_SIZE; y++) {
-                    availabilitySum+=map[x][y];
+                    availabilitySum=availabilitySum+map[x][y];
                 }
             }
             if (availabilitySum==semiturnPointer){
@@ -72,8 +74,8 @@ public class GameLogic {
             } else if (playerTurn==PLAYER_2) {
                 playerTurn=PLAYER_1;
             }
+            checkGameEnd();
         }
-        checkGameEnd();
         return flag;
     }
 
@@ -107,12 +109,12 @@ public class GameLogic {
             flag = false;
             for (int x=0;x<X_FIELD_SIZE;x++){
                 for (int y=0;y<Y_FIELD_SIZE;y++){
-                    if ((map[x][y]==0)&(players[x][y]!=playerTurn)&(!killed[x][y])) {
+                    if ((map[x][y]==0)&(players[x][y]!=playerTurn)) {
                         for(int dx=-1; dx<2;dx++){
                             for(int dy=-1; dy<2;dy++){
                                 if (!((dx==0)&(dy==0))) {
                                     if((x+dx>=0)&(x+dx<X_FIELD_SIZE)&(y+dy>=0)&(y+dy<Y_FIELD_SIZE)) {
-                                        if((map[x+dx][y+dy]==1)&(players[x+dx][y+dy]!=0)) {
+                                        if(((map[x+dx][y+dy]==1)&(players[x+dx][y+dy]!=0))&(((players[x+dx][y+dy]==playerTurn)&(!killed[x+dx][y+dy]))|((players[x+dx][y+dy]!=playerTurn)&(killed[x+dx][y+dy])))) {
                                             map[x][y]=1;
                                             flag=true;
                                         }
@@ -126,11 +128,20 @@ public class GameLogic {
 
         }
 
-        if ((playerTurn==PLAYER_1)&(players[0][Y_FIELD_SIZE]!=PLAYER_1)) {
-            map[0][Y_FIELD_SIZE]=1;
+        for (int i=0;i<X_FIELD_SIZE;i++) {
+            for (int j = 0; j < Y_FIELD_SIZE; j++) {
+                if(((map[i][j]==1)&(players[i][j]==playerTurn))|(killed[i][j])) {
+                    map[i][j]=0;
+                }
+            }
         }
-        if ((playerTurn==PLAYER_2)&(players[X_FIELD_SIZE][0]!=PLAYER_2)) {
-            map[X_FIELD_SIZE][0]=1;
+
+
+        if ((playerTurn==PLAYER_1)&(players[0][Y_FIELD_SIZE-1]!=PLAYER_1)) {
+            map[0][Y_FIELD_SIZE-1]=1;
+        }
+        if ((playerTurn==PLAYER_2)&(players[X_FIELD_SIZE-1][0]!=PLAYER_2)) {
+            map[X_FIELD_SIZE-1][0]=1;
         }
 
         return map;
